@@ -1,27 +1,45 @@
 import initSqlJs from 'sql.js';
+import ColumnSet from '../interfaces/ColumnSet';
+import TableDescriptor from '../interfaces/TableDescriptor';
 
 const STATIC_ASSET = (file: string) => `/sql/${file}`;
 
 export default async function SQL() {
+    const tables: TableDescriptor = {};
+
     const builder = await initSqlJs({
         locateFile: STATIC_ASSET
     });
 
     const db = new builder.Database();
 
-    function analyseCSV() {}
+    function getTable(tableName: string) {
+        if (!tables[tableName])
+            throw new Error(`Table ${tableName} not exist`);
 
-    function loadCSV(data: string) {}
-
-    function query(query: string) {
-        return db.exec(query);
+        return {
+            tableName,
+            columns: tables[tableName]
+        };
     }
 
-    function run(query: string) {
-        db.run(query);
+    function getTables() {
+        return Object.entries(tables).map(([key, value]) => ({
+            tableName: key,
+            columns: value
+        }))
     }
 
-    function prepare(query: string) {
-        return db.prepare(query).run();
+    function setTable(tableName: string, columns: ColumnSet[]) {
+        tables[tableName] = columns;
     }
+
+    return {
+        database: db,
+        tables: {
+            get: getTable,
+            set: setTable,
+            all: getTables
+        }
+    };
 }
