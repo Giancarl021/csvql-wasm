@@ -1,7 +1,7 @@
 interface CsvParserOptions {
     skipFirstLine: boolean;
-    separator: string;
-    
-};
+    delimiter: string;
+    escape: string;
+}
 
 export default CsvParserOptions;

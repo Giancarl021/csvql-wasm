@@ -9,13 +9,9 @@ export default async function SQL() {
 
     const db = new builder.Database();
 
-    function analyseCSV() {
+    function analyseCSV() {}
 
-    }
-
-    function loadCSV(data: string) {
-        
-    }
+    function loadCSV(data: string) {}
 
     function query(query: string) {
         return db.exec(query);
