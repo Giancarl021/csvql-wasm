@@ -1,7 +1,7 @@
-import RowType from './RowType';
+import { SqlValue } from 'sql.js';
 
 interface ParsedRow {
-    [key: string]: RowType;
+    [key: string]: SqlValue;
 }
 
 export default ParsedRow;

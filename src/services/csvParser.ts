@@ -70,7 +70,7 @@ export default function (
             .map((_, i) => `:val${i}`)
             .join(',')})`;
 
-        sql.database.exec(tableQuery);
+        sql.database.run(tableQuery);
 
         const insertStatement = sql.database.prepare(insertQuery);
         const rowFormatter = rows.Formatter(headers);

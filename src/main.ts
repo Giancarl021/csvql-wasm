@@ -14,7 +14,7 @@ async function main() {
         tableName: 'test'
     });
 
-    console.log(sql.database.run('SELECT * FROM test'));
+    console.log(sql.query('SELECT * FROM test; SELECT 1'));
 }
 
 main().catch(console.error);

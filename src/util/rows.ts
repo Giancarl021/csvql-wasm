@@ -30,7 +30,7 @@ export default function (options: CsvParserOptions) {
             if (!cell && typeof cell !== 'number') return null;
 
             if (cell === 'true' || cell === 'false') {
-                return cell ==='true' ? 1 : 0;
+                return cell === 'true' ? 1 : 0;
             }
 
             return cell;
@@ -46,7 +46,12 @@ export default function (options: CsvParserOptions) {
                 const item = row[i],
                     header = headers[i];
 
-                result[header] = infer(item);
+                let parsedItem = infer(item);
+
+                if (typeof parsedItem === 'undefined') parsedItem = null;
+                else if (typeof parsedItem === 'boolean') parsedItem = parsedItem ? 1 : 0;
+
+                result[header] = parsedItem;
             }
 
             return result;
