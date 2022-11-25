@@ -6,16 +6,22 @@ export default function (element: HTMLElement) {
     const editor = monaco.editor.create(element, {
         language: 'sql',
         theme: 'vs-dark',
+        automaticLayout: true
     });
+
+    function setContent(content: string) {
+        editor.setValue(content);
+    }
 
     function restoreContent() {
         const content = localStorage.getItem(STORAGE_KEY);
         if (content) {
-            editor.setValue(content);
+            setContent(content);
         }
     }
 
     return {
+        setContent,
         restoreContent
     };
 }

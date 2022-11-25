@@ -1,3 +1,4 @@
+import { SqlMultiResults, SqlResults } from './../interfaces/SqlResult';
 import initSqlJs, { QueryExecResult } from 'sql.js';
 
 import ColumnSet from '../interfaces/ColumnSet';
@@ -36,17 +37,17 @@ export default async function SQL() {
         tables[tableName] = columns;
     }
 
-    function query(statement: string): SqlResult[][] {
+    function query(statement: string): SqlMultiResults {
         const results = db.exec(statement);
 
         return parseResult(results);
     }
 
-    function parseResult(queryResults: QueryExecResult[]): SqlResult[][] {
-        const results: SqlResult[][] = [];
+    function parseResult(queryResults: QueryExecResult[]): SqlMultiResults {
+        const results: SqlMultiResults = [];
 
         for (const queryResult of queryResults) {
-            const result: SqlResult[] = [];
+            const result: SqlResults = [];
             const headers = queryResult.columns;
 
             for (const item of queryResult.values) {
