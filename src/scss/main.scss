@@ -173,4 +173,14 @@ body {
             }
         }
     }
+
+    &.no-results {
+        main#editor {
+            grid-row: 1 / 4;
+        }
+
+        section#results {
+            display: none;
+        }
+    }
 }
