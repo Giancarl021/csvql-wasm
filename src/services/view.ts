@@ -37,9 +37,14 @@ export default function () {
         resultElements.contents.length = 0;
     }
 
-    // function removeTab(index: number) {
+    function removeTab(index: number) {
+        const tab = elements.tables.children[index];
+        tab.remove();
+    }
+
+    // function pinTab(index: number) {
     //     const tab = elements.tables.children[index];
-    //     tab.remove();
+    //     tab.classList.add('pinned');
     // }
 
     function addTab(result: SqlResults) {
@@ -49,7 +54,18 @@ export default function () {
 
         const tabIndex = resultElements.tabs.children.length;
 
-        tab.innerHTML = `<span>#${tabIndex + 1}</span>`;
+        const tabTitle = document.createElement('span');
+
+        tabTitle.textContent = `#${tabIndex + 1}`; 
+
+        const deleteButton = document.createElement('span');
+
+        deleteButton.classList.add('tag', 'is-delete');
+
+        deleteButton.onclick = () => removeTab(tabIndex);
+
+        tab.appendChild(tabTitle);
+        tab.appendChild(deleteButton);
 
         tab.onclick = () => setActiveTab(tabIndex);
 

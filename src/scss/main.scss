@@ -1,6 +1,10 @@
+@use "sass:color";
+
 $shadow: 0 0 20px #0004;
 $fgColor: #aaa;
 $bgColor: #3A3F44;
+$msgColor: adjust-color($color: #3273dc, $saturation: -10%);
+$errColor: adjust-color($color: #EE5F5B, $saturation: -10%);
 
 html,
 body {
@@ -94,22 +98,13 @@ body {
                 background-color: $bgColor;
                 color: $fgColor;
                 position: relative;
-                padding: 3px 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
 
                 &:hover {
                     cursor: pointer;
                     background-color: darken($bgColor, 10%);
-                }
-
-                &::after {
-                    content: '';
-                    position: absolute;
-                    display: block;
-                    width: 1px;
-                    height: 100%;
-                    background-color: $fgColor;
-                    left: 100%;
-                    top: 0;
                 }
 
                 &.is-active {
@@ -117,10 +112,30 @@ body {
                     color: $bgColor;
 
                     &:hover {
-                        background-color: darken($fgColor, 10%);
+                        background-color: darken($fgColor, 15%);
+                    }
+                }
+
+                span:not(.tag) {
+                    margin: 0;
+                    padding: 0 10px;
+                }
+
+                span.tag {
+                    margin: 0;
+                    border-radius: 0;
+                    background-color: $errColor;
+                    color: white;
+
+                    &:hover {
+                        background-color: darken($errColor, 10%);
                     }
                 }
             }
+        }
+
+        div.content {
+            overflow: auto;
         }
     }
 
