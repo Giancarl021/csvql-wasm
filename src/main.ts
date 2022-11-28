@@ -1,3 +1,4 @@
+import { SqlMultiResults } from './interfaces/SqlResult';
 import 'bulma';
 import 'bulmaswatch/slate/bulmaswatch.min.css';
 import './scss/main.scss';
@@ -48,8 +49,14 @@ async function main() {
 
             if (!content) return;
 
-            const results = sql.query(content);
-            view.setResults(results);
+            let results: SqlMultiResults;
+
+            try {
+                results = sql.query(content);
+                view.setResults(results);
+            } catch (err) {
+                view.setError((err as Error).message);
+            }
         }
     }
 }

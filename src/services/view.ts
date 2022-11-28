@@ -4,7 +4,7 @@ import ViewElements from '../interfaces/ViewElements';
 interface ResultElements {
     tabs: HTMLElement;
     content: HTMLElement;
-    contents: HTMLTableElement[];
+    contents: (HTMLTableElement | HTMLDivElement)[];
 }
 
 export default function () {
@@ -13,8 +13,15 @@ export default function () {
         tables: document.querySelector('#tables')!,
         results: document.querySelector('#results')!,
         commands: {
-            execAll: document.querySelector('section#commands button#btn-exec-all') as HTMLButtonElement,
-            execSelection: document.querySelector('section#commands button#btn-exec-selection') as HTMLButtonElement
+            execAll: document.querySelector(
+                'section#commands button#btn-exec-all'
+            ) as HTMLButtonElement,
+            execSelection: document.querySelector(
+                'section#commands button#btn-exec-selection'
+            ) as HTMLButtonElement,
+            clearResults: document.querySelector(
+                'section#commands button#btn-clear'
+            ) as HTMLButtonElement
         }
     };
 
@@ -23,6 +30,8 @@ export default function () {
         content: elements.results.querySelector('.content')!,
         contents: []
     } as ResultElements;
+
+    elements.commands.clearResults.onclick = () => clearResults();
 
     function setResults(results: SqlMultiResults) {
         clearResults();
@@ -34,11 +43,25 @@ export default function () {
         document.body.classList.remove('no-results');
     }
 
+    function setError(message: string) {
+        clearResults();
+
+        addTab(message);
+
+        setActiveTab(0);
+
+        document.body.classList.remove('no-results');
+    }
+
     function clearResults() {
-        const hasPinned = Boolean(resultElements.tabs.querySelector('div.tab.pinned'));
+        const hasPinned = Boolean(
+            resultElements.tabs.querySelector('div.tab.pinned')
+        );
 
         if (hasPinned) {
-            const nonPinnedTabs = Array.from(resultElements.tabs.querySelectorAll('div.tab:not(.pinned)')) as HTMLElement[];
+            const nonPinnedTabs = Array.from(
+                resultElements.tabs.querySelectorAll('div.tab:not(.pinned)')
+            ) as HTMLElement[];
 
             for (const tab of nonPinnedTabs) {
                 const index = Number(tab.getAttribute('data-index')!);
@@ -53,7 +76,9 @@ export default function () {
     }
 
     function changeTabIndex(index: number, newIndex: number) {
-        const tab = resultElements.tabs.querySelector(`div.tab[data-index="${index}"]`);
+        const tab = resultElements.tabs.querySelector(
+            `div.tab[data-index="${index}"]`
+        );
 
         if (!tab) throw new Error(`Tab with index ${index} not found`);
 
@@ -67,7 +92,9 @@ export default function () {
     }
 
     function removeTab(index: number) {
-        const tab = resultElements.tabs.querySelector(`div.tab[data-index="${index}"]`);
+        const tab = resultElements.tabs.querySelector(
+            `div.tab[data-index="${index}"]`
+        );
 
         if (!tab) throw new Error(`Tab with index ${index} not found`);
 
@@ -78,16 +105,15 @@ export default function () {
             changeTabIndex(i, ni);
         }
 
-        const tabs = Array.from(resultElements.tabs.querySelectorAll('div.tab')).slice(index) as HTMLElement[];
+        const tabs = Array.from(
+            resultElements.tabs.querySelectorAll('div.tab')
+        ).slice(index) as HTMLElement[];
 
         for (const tab of tabs) {
             const prefix = tab.classList.contains('pinned') ? '^' : '#';
             const index = Number(tab.getAttribute('data-index')) + 1;
 
-            renameTab(
-                tab,
-                `${prefix}${index}`
-            );
+            renameTab(tab, `${prefix}${index}`);
         }
 
         resultElements.tabs.removeChild(tab);
@@ -101,7 +127,9 @@ export default function () {
     }
 
     function pinTab(index: number) {
-        const tab = resultElements.tabs.querySelector(`div.tab[data-index="${index}"]`) as HTMLElement;
+        const tab = resultElements.tabs.querySelector(
+            `div.tab[data-index="${index}"]`
+        ) as HTMLElement;
 
         if (!tab) throw new Error(`Tab with index ${index} not found`);
 
@@ -110,13 +138,16 @@ export default function () {
         const pinButton = tab.querySelector('span.tag.btn-pin') as HTMLElement;
 
         pinButton.textContent = '>';
-        pinButton.onclick = () => unpinTab(Number(tab.getAttribute('data-index')!));
+        pinButton.onclick = () =>
+            unpinTab(Number(tab.getAttribute('data-index')!));
 
         renameTab(tab, `^${index + 1}`);
     }
 
     function unpinTab(index: number) {
-        const tab = resultElements.tabs.querySelector(`div.tab[data-index="${index}"]`) as HTMLElement;
+        const tab = resultElements.tabs.querySelector(
+            `div.tab[data-index="${index}"]`
+        ) as HTMLElement;
 
         if (!tab) throw new Error(`Tab with index ${index} not found`);
 
@@ -125,12 +156,14 @@ export default function () {
         const pinButton = tab.querySelector('span.tag.btn-pin') as HTMLElement;
 
         pinButton.textContent = 'V';
-        pinButton.onclick = () => pinTab(Number(tab.getAttribute('data-index')!));
+        pinButton.onclick = () =>
+            pinTab(Number(tab.getAttribute('data-index')!));
 
         renameTab(tab, `#${index + 1}`);
     }
 
-    function addTab(result: SqlResults) {
+    function addTab(result: SqlResults | string) {
+        const isError = typeof result === 'string';
         const tab = document.createElement('div');
 
         tab.classList.add('tab');
@@ -140,25 +173,36 @@ export default function () {
         const tabTitle = document.createElement('span');
 
         tabTitle.classList.add('tab-title');
-        tabTitle.textContent = `#${tabIndex + 1}`; 
-        tabTitle.onclick = () => setActiveTab(Number(tab.getAttribute('data-index')!));
-
-        const pinButton = document.createElement('span');
-        pinButton.classList.add('tag', 'btn-pin');
-        pinButton.textContent = 'V';
-        pinButton.onclick = () => pinTab(Number(tab.getAttribute('data-index')!));
+        tabTitle.textContent = `#${tabIndex + 1}${isError ? '(!)' : ''}`;
+        tabTitle.onclick = () =>
+            setActiveTab(Number(tab.getAttribute('data-index')!));
 
         const deleteButton = document.createElement('span');
 
         deleteButton.classList.add('tag', 'btn-delete');
         deleteButton.textContent = 'X';
-        deleteButton.onclick = () => removeTab(Number(tab.getAttribute('data-index')!));
+        deleteButton.onclick = () =>
+            removeTab(Number(tab.getAttribute('data-index')!));
 
         tab.appendChild(tabTitle);
-        tab.appendChild(pinButton);
+
+        if (!isError) {
+            const pinButton = document.createElement('span');
+            pinButton.classList.add('tag', 'btn-pin');
+            pinButton.textContent = 'V';
+            pinButton.onclick = () =>
+                pinTab(Number(tab.getAttribute('data-index')!));
+
+            tab.appendChild(pinButton);
+        }
+
         tab.appendChild(deleteButton);
 
         tab.setAttribute('data-index', String(tabIndex));
+
+        const results: SqlResults = isError ? [{ Error: result }] : result;
+
+        if (isError) tab.classList.add('error');
 
         const table = document.createElement('table');
         table.classList.add(
@@ -168,9 +212,11 @@ export default function () {
             'is-fullwidth'
         );
 
+        if (isError) table.classList.add('error');
+
         const tbody = document.createElement('tbody');
 
-        const headers = Object.keys(result[0]);
+        const headers = Object.keys(results[0]);
 
         const headerRow = document.createElement('tr');
 
@@ -182,7 +228,7 @@ export default function () {
 
         tbody.appendChild(headerRow);
 
-        for (const row of result) {
+        for (const row of results) {
             const rowElement = document.createElement('tr');
             for (const header of headers) {
                 const cell = document.createElement('td');
@@ -200,9 +246,13 @@ export default function () {
     }
 
     function setActiveTab(index: number) {
-        resultElements.tabs.querySelector(`div.tab.is-active`)?.classList.remove('is-active');
+        resultElements.tabs
+            .querySelector(`div.tab.is-active`)
+            ?.classList.remove('is-active');
 
-        const tab = resultElements.tabs.querySelector(`div.tab[data-index="${index}"]`);
+        const tab = resultElements.tabs.querySelector(
+            `div.tab[data-index="${index}"]`
+        );
 
         if (!tab) throw new Error(`Tab with index ${index} not found`);
 
@@ -228,11 +278,13 @@ export default function () {
             elements.commands.execSelection.classList.remove('disabled');
         };
     }
-    
+
     return {
         elements,
         setResults,
+        setError,
         onExecAll,
+        clearResults,
         onExecSelection
     };
 }

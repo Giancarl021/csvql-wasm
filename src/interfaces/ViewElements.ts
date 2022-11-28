@@ -5,6 +5,7 @@ interface ViewElements {
     commands: {
         execAll: HTMLButtonElement;
         execSelection: HTMLButtonElement;
+        clearResults: HTMLButtonElement;
     }
 };
 

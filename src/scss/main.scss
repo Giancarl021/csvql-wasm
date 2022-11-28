@@ -14,12 +14,12 @@ body {
 body {
     $headerHeight: 80px;
     $tablesWidth: max(#{ 100% / 5 }, 300px);
-    $commandsHeigth: 30px;
-    $halfHeight: calc(50% - #{$headerHeight} / 2 - #{ $headerHeight} / 4 - #{$commandsHeigth} / 2);
+    $commandsHeight: 30px;
+    $halfHeight: calc(50% - #{$headerHeight} / 2 - #{ $headerHeight} / 4 - #{$commandsHeight} / 2);
     height: 100vh;
     display: grid;
     grid-template-columns: $tablesWidth calc(100% - $tablesWidth);
-    grid-template-rows: $headerHeight $halfHeight $commandsHeigth $halfHeight calc(#{ $headerHeight} / 2);
+    grid-template-rows: $headerHeight $halfHeight $commandsHeight $halfHeight calc(#{ $headerHeight} / 2);
 
     header#banner {
         grid-row: 1 / 2;
@@ -142,9 +142,17 @@ body {
                     }
                 }
 
+                &.error {
+                    color: darken($fgColor, 15%);
+                }
+
                 &.is-active {
                     background-color: $fgColor;
                     color: $bgColor;
+
+                    &.error {
+                        color: $errColor;
+                    }
 
                     &:hover {
                         $bgColor: darken($fgColor, 15%);
@@ -210,6 +218,13 @@ body {
 
         div.content {
             overflow: auto;
+
+            table.error {
+
+                &, th {
+                    color: lighten($errColor, 30%);
+                }
+            }
         }
     }
 
@@ -249,7 +264,7 @@ body {
     }
 
     &.no-results {
-        grid-template-rows: $headerHeight calc($halfHeight * 2) $commandsHeigth 0px calc(#{ $headerHeight} / 2);
+        grid-template-rows: $headerHeight calc($halfHeight * 2) $commandsHeight 0px calc(#{ $headerHeight} / 2);
 
         section#results {
             display: none;
