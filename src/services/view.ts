@@ -11,7 +11,11 @@ export default function () {
     const elements: ViewElements = {
         editor: document.querySelector('#editor')!,
         tables: document.querySelector('#tables')!,
-        results: document.querySelector('#results')!
+        results: document.querySelector('#results')!,
+        commands: {
+            execAll: document.querySelector('section#commands button#btn-exec-all') as HTMLButtonElement,
+            execSelection: document.querySelector('section#commands button#btn-exec-selection') as HTMLButtonElement
+        }
     };
 
     const resultElements = {
@@ -209,8 +213,26 @@ export default function () {
         resultElements.content.appendChild(content);
     }
 
+    function onExecAll(callback: () => void) {
+        elements.commands.execAll.onclick = () => {
+            elements.commands.execAll.classList.add('disabled');
+            callback();
+            elements.commands.execAll.classList.remove('disabled');
+        };
+    }
+
+    function onExecSelection(callback: () => void) {
+        elements.commands.execSelection.onclick = () => {
+            elements.commands.execSelection.classList.add('disabled');
+            callback();
+            elements.commands.execSelection.classList.remove('disabled');
+        };
+    }
+    
     return {
         elements,
-        setResults
+        setResults,
+        onExecAll,
+        onExecSelection
     };
 }

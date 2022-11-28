@@ -9,6 +9,8 @@ export default function (element: HTMLElement) {
         automaticLayout: true
     });
 
+    const model = editor.getModel()!;
+
     function setContent(content: string) {
         editor.setValue(content);
     }
@@ -20,8 +22,36 @@ export default function (element: HTMLElement) {
         }
     }
 
+    function getSelectionContent() {
+        const selections = editor.getSelections();
+        const queries: string[] = [];
+
+        if (!selections || !selections.length) return '';
+
+        for (const selection of selections) {
+            if (selection.isEmpty()) continue;
+
+            const query = model.getValueInRange(selection);
+
+            if (!query) continue;
+
+            queries.push(
+                query.endsWith(';') ?
+                    query.substring(0, query.length - 1) :
+                    query
+                );
+        }
+
+        return queries.join(';');    }
+
+    function getAllContent() {
+        return editor.getValue();
+    }
+
     return {
         setContent,
-        restoreContent
+        restoreContent,
+        getAllContent,
+        getSelectionContent
     };
 }

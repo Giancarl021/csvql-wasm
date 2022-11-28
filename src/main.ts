@@ -8,6 +8,11 @@ import Csv from './services/csv';
 import View from './services/view';
 import Editor from './services/editor';
 
+enum QueryType {
+    AllContent,
+    SelectionContent
+};
+
 async function main() {
     const view = View();
     const sql = await Sql();
@@ -20,7 +25,33 @@ async function main() {
         tableName: 'test'
     });
 
+    view.onExecAll(runQuery(QueryType.AllContent));
+    view.onExecSelection(runQuery(QueryType.SelectionContent));
+
     view.setResults(sql.query('SELECT * FROM test; SELECT 1; SELECT 2; SELECT 4; SELECT 3; SELECT 6;'));
+
+    function runQuery(type: QueryType): () => void {
+        let contentCallback: () => string;
+        switch (type) {
+            case QueryType.AllContent:
+                contentCallback = editor.getAllContent;
+                break;
+            case QueryType.SelectionContent:
+                contentCallback = editor.getSelectionContent;
+                break;
+            default:
+                throw new Error('Invalid QueryType provided');
+        }
+
+        return () => {
+            const content = contentCallback();
+
+            if (!content) return;
+
+            const results = sql.query(content);
+            view.setResults(results);
+        }
+    }
 }
 
 main().catch(console.error);
