@@ -27,13 +27,16 @@ export default function () {
             downloadFile: document.querySelector(
                 'section#commands button#btn-download'
             ) as HTMLButtonElement,
-            uploadFile: document.querySelector(
+            uploadSqlite: document.querySelector(
                 'section#commands button#btn-upload'
             ) as HTMLButtonElement,
             uploadCsv: document.querySelector(
                 'section#commands button#btn-upload-csv'
             ) as HTMLButtonElement
-        }
+        },
+        hiddenFileInput: document.querySelector(
+            'input[type="file"]#upload'
+        ) as HTMLInputElement
     };
 
     const resultElements = {
@@ -347,13 +350,31 @@ export default function () {
         };
     }
 
+    function onUploadCsv(callback: () => void) {
+        elements.commands.uploadCsv.onclick = () => {
+            elements.commands.uploadCsv.classList.add('disabled');
+            callback();
+            elements.commands.uploadCsv.classList.remove('disabled');
+        };
+    }
+
+    function onUploadSqlite(callback: () => void) {
+        elements.commands.uploadSqlite.onclick = () => {
+            elements.commands.uploadSqlite.classList.add('disabled');
+            callback();
+            elements.commands.uploadSqlite.classList.remove('disabled');
+        };
+    }
+
     return {
         elements,
         setResults,
         setError,
         onExecAll,
-        onDownload,
         onExecSelection,
+        onDownload,
+        onUploadCsv,
+        onUploadSqlite,
         setSchema,
         clearResults
     };

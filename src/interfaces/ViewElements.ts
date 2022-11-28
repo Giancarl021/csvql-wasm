@@ -7,9 +7,10 @@ interface ViewElements {
         execSelection: HTMLButtonElement;
         clearResults: HTMLButtonElement;
         downloadFile: HTMLButtonElement;
-        uploadFile: HTMLButtonElement;
+        uploadSqlite: HTMLButtonElement;
         uploadCsv: HTMLButtonElement;
-    }
+    };
+    hiddenFileInput: HTMLInputElement;
 };
 
 export default ViewElements;

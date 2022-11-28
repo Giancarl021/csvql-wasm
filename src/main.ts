@@ -25,24 +25,24 @@ async function main() {
 
     const sql = await Sql();
     const view = View();
-    const files = Files();
     const csv = Csv(sql);
     const editor = Editor(view.elements.editor);
+    const files = Files(view.elements.hiddenFileInput);
 
     editor.restoreContent();
 
-    await csv.parse('Col1,Col2,Col3\n1.10,2,3\n4,5,xalabaias', {
-        tableName: 'test1'
-    });
+    // await csv.parse('Col1,Col2,Col3\n1.10,2,3\n4,5,xalabaias', {
+    //     tableName: 'test1'
+    // });
 
-    await csv.parse('Col1,Col2,Col3\n1.10,2,3\n4,5,xalabaias', {
-        tableName: 'test2'
-    });
+    // await csv.parse('Col1,Col2,Col3\n1.10,2,3\n4,5,xalabaias', {
+    //     tableName: 'test2'
+    // });
 
     view.onExecAll(runQuery(QueryType.AllContent));
     view.onExecSelection(runQuery(QueryType.SelectionContent));
 
-    updateSchema();
+    // updateSchema();
 
     view.onDownload(() => {
         download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');
@@ -60,7 +60,15 @@ async function main() {
         updateSchema();
     });
 
-    view.setResults(sql.query('SELECT * FROM test1; SELECT 1; SELECT 2; SELECT 4; SELECT 3; SELECT 6;'));
+    view.onUploadCsv(() => {
+        files.fireUpload('.csv');
+    });
+
+    view.onUploadSqlite(() => {
+        files.fireUpload('.sqlite', '.db', '.sqlite3');
+    });
+
+    // view.setResults(sql.query('SELECT * FROM test1; SELECT 1; SELECT 2; SELECT 4; SELECT 3; SELECT 6;'));
 
     function runQuery(type: QueryType): () => void {
         let contentCallback: () => string;
