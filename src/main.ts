@@ -35,26 +35,51 @@ async function main() {
     view.onExecSelection(runQuery(QueryType.SelectionContent));
 
     view.onDownload(() => {
+        view.showModal('loading');
         download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');
+        view.hideModal('loading');
+    });
+
+    files.onError(err => {
+        view.hideModal('loading');
+        view.showModal('error', err);
     });
 
     files.onCsvUploaded(async (content, filename) => {
-        await csv.parse(content, {
-            tableName: filename.replace(/\.[^/.]+$/, '')
-        });
+        try {
+            await csv.parse(content, {
+                tableName: filename.replace(/\.[^/.]+$/, '')
+            });
+        } catch (err) {
+            view.showModal('error', err as Error);
+        }
+
         updateSchema();
+        view.hideModal('loading');
     });
 
     files.onSqliteUploaded(content => {
-        sql.fromBinary(content);
-        updateSchema();
+        try {
+            sql.fromBinary(content);
+            updateSchema();
+        } catch (err) {
+            view.showModal('error', err as Error);
+            sql.reset();
+        }
+        view.hideModal('loading');
+    });
+
+    files.onCancel(() => {
+        view.hideModal('loading');
     });
 
     view.onUploadCsv(() => {
+        view.showModal('loading');
         files.fireUpload('.csv');
     });
 
     view.onUploadSqlite(() => {
+        view.showModal('loading');
         files.fireUpload('.sqlite', '.db', '.sqlite3');
     });
 

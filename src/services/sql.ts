@@ -17,21 +17,21 @@ export default async function SQL() {
     function getSchema(): Schema {
         const schema: Schema = [];
         const tables = query('SELECT name FROM sqlite_master WHERE type=\'table\'')
-            [0]
-            .map(t => t.name);
+            [0]?.map(t => t.name);
+
+        if (!tables) return schema;
 
         for (const table of tables) {
             const columns =
                 query(`SELECT name, type FROM PRAGMA_TABLE_INFO('${table}')`)
-                [0]
-                .map(c => ({
+                [0]?.map(c => ({
                     name: c.name,
                     type: String(c.type).toLowerCase()
                 }) as ColumnSet);
 
             schema.push({
                 tableName: String(table),
-                columns
+                columns: columns ?? []
             });
         }
 
@@ -71,6 +71,10 @@ export default async function SQL() {
         db = new builder.Database(binary);
     }
 
+    function reset() {
+        db = new builder.Database();
+    }
+
     function toBinary(): Uint8Array {
         return db.export();
     }
@@ -80,6 +84,7 @@ export default async function SQL() {
         query,
         fromBinary,
         toBinary,
+        reset,
         getSchema
     };
 }

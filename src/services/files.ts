@@ -1,19 +1,39 @@
 export type CsvCallback = (data: string, filename: string) => void;
 export type SqliteCallback = (data: Uint8Array) => void;
+export type ErrorCallback = (err: Error) => void;
+export type CancelCallback = () => void;
 
 export default function (inputElement: HTMLInputElement) {
     const csvCallbacks: CsvCallback[] = [];
     const sqliteCallbacks: SqliteCallback[] = [];
+    const errorCallbacks: ErrorCallback[] = [];
+    const cancelCallbacks: CancelCallback[] = [];
 
     inputElement.onchange = async () => {
         const files = Array.from(inputElement.files ?? []);
         await parseFiles(files);
     };
 
+    inputElement.onclick = () => {
+        inputElement.setAttribute('data-fired', 'true');
+    }
+
+    document.body.onfocus = () => {
+        if (inputElement.getAttribute('data-fired') !== 'true') return;
+
+        inputElement.removeAttribute('data-fired');
+        cancelCallbacks.forEach(cb => cb());
+    }
+
     async function parseFiles(files: File[]) {
         if (files.length === 0) return;
 
         for (const file of files) {
+            if (file.size >= 1e+9) {
+                errorCallbacks.forEach(cb => cb(new Error(`File ${file.name} exceeds 1GB`)));
+                return;
+            }
+
             if (file.name.endsWith('.csv')) {
                 const content = await file.text();
 
@@ -43,9 +63,19 @@ export default function (inputElement: HTMLInputElement) {
         csvCallbacks.push(callback);
     }
 
+    function onError(callback: (err: Error) => void) {
+        errorCallbacks.push(callback);
+    }
+
+    function onCancel(callback: CancelCallback) {
+        cancelCallbacks.push(callback);
+    }
+
     return {
         onSqliteUploaded,
         onCsvUploaded,
+        onError,
+        onCancel,
         fireUpload
     };
 }

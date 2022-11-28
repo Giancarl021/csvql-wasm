@@ -31,7 +31,7 @@ body {
         flex-direction: column;
         box-shadow: $shadow;
 
-        > * {
+        >* {
             margin: 0;
             padding: 0;
         }
@@ -75,7 +75,7 @@ body {
         ul#content {
             overflow-y: auto;
             user-select: none;
-            
+
             h1.table-title {
                 display: flex;
                 align-items: center;
@@ -255,6 +255,7 @@ body {
                         background-color: $bgColor;
 
                         span.tag {
+
                             &.btn-delete,
                             &.btn-pin {
                                 background-color: $bgColor;
@@ -264,6 +265,7 @@ body {
 
                     span.tag {
                         $bgColor: darken($fgColor, 20%);
+
                         &.btn-delete {
                             background-color: $fgColor;
                             color: $errColor;
@@ -317,14 +319,16 @@ body {
 
             table.error {
 
-                &, th {
+                &,
+                th {
                     color: lighten($errColor, 30%);
                 }
             }
 
             table.message {
 
-                &, th {
+                &,
+                th {
                     color: lighten($msgColor, 30%);
                 }
             }
@@ -368,6 +372,40 @@ body {
 
     div#hidden {
         display: none;
+    }
+
+    div.modal {
+        div.modal-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+        }
+
+        &#error {
+            h1.title {
+                color: lighten($errColor, 10%);
+            }
+
+            h2.subtitle {
+                color: lighten($errColor, 30%);
+            }
+        }
+
+        &#loading {
+            progress {
+                width: min(800px, calc(100% - 40px));
+            }
+        }
     }
 
     &.no-results {

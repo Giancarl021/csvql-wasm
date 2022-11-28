@@ -11,6 +11,11 @@ interface ViewElements {
         uploadCsv: HTMLButtonElement;
     };
     hiddenFileInput: HTMLInputElement;
+    modals: {
+        loading: HTMLDivElement;
+        error: HTMLDivElement;
+        dropArea: HTMLDivElement;
+    }
 };
 
 export default ViewElements;

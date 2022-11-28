@@ -2,6 +2,8 @@ import { SqlMultiResults, SqlResults } from './../interfaces/SqlResult';
 import ViewElements from '../interfaces/ViewElements';
 import Schema from '../interfaces/Schema';
 
+type ModalType = 'loading' | 'error' | 'dropArea';
+
 interface ResultElements {
     tabs: HTMLElement;
     content: HTMLElement;
@@ -36,7 +38,12 @@ export default function () {
         },
         hiddenFileInput: document.querySelector(
             'input[type="file"]#upload'
-        ) as HTMLInputElement
+        ) as HTMLInputElement,
+        modals: {
+            loading: document.querySelector('div.modal#loading') as HTMLDivElement,
+            error: document.querySelector('div.modal#error') as HTMLDivElement,
+            dropArea: document.querySelector('div.modal#drop-area') as HTMLDivElement
+        }
     };
 
     const resultElements = {
@@ -47,6 +54,9 @@ export default function () {
     } as ResultElements;
 
     elements.commands.clearResults.onclick = () => clearResults();
+
+    (elements.modals.error.querySelector('button.modal-close') as HTMLButtonElement)
+        .onclick = () => hideModal('error');
 
     function setSchema(descriptor: Schema) {
         resultElements.tableContent.innerHTML = '';
@@ -366,6 +376,22 @@ export default function () {
         };
     }
 
+    function showModal(type: ModalType, error?: Error) {
+        const modal = elements.modals[type];
+
+        if (error && type === 'error') {
+            modal.querySelector('h2.subtitle')!.textContent = error.message;
+        }
+
+        modal.classList.add('is-active');
+    }
+
+    function hideModal(type: ModalType) {
+        const modal = elements.modals[type];
+
+        modal.classList.remove('is-active');
+    }
+
     return {
         elements,
         setResults,
@@ -376,6 +402,8 @@ export default function () {
         onUploadCsv,
         onUploadSqlite,
         setSchema,
-        clearResults
+        clearResults,
+        showModal,
+        hideModal
     };
 }

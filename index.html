@@ -47,5 +47,25 @@
         <div id="hidden">
             <input type="file" id="upload" />
         </div>
+        <div id="drop-area" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <h1 class="title">Drop your files here</h1>
+            </div>
+        </div>
+        <div id="error" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <h1 class="title">Error</h1>
+                <h2 class="subtitle">Detailed message</h2>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+        </div>
+        <div id="loading" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <progress class="progress is-medium is-light" max="100">Loading...</progress>
+            </div>
+        </div>
     </body>
 </html>
