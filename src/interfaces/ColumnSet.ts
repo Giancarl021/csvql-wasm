@@ -1,6 +1,6 @@
 interface ColumnSet {
     name: string;
-    type: string;
+    type: 'int' | 'float' | 'text';
 }
 
 export default ColumnSet;

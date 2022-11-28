@@ -1,11 +1,11 @@
 import ParsedRow from '../interfaces/ParsedRow';
 import ColumnSet from '../interfaces/ColumnSet';
 
-const DEFAULT_TYPE = 'text';
+const DEFAULT_TYPE: ColumnSet['type'] = 'text';
 
 interface ColumnMap {
     [key: string]: {
-        type: string | null;
+        type: ColumnSet['type'] | null;
         isConcrete: boolean;
     };
 }
@@ -33,6 +33,8 @@ export default function (
 
             const data = row[key];
             if (!data) continue;
+
+            console.log(columns, rows, depth);
 
             switch (typeof data) {
                 case 'number':

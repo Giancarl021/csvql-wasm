@@ -31,7 +31,7 @@ body {
         flex-direction: column;
         box-shadow: $shadow;
 
-        >* {
+        > * {
             margin: 0;
             padding: 0;
         }
@@ -68,9 +68,95 @@ body {
     }
 
     aside#tables {
-        background-color: blue;
         grid-column: 1 / 2;
         grid-row: 2 / 5;
+        background-color: darken($bgColor, 10%);
+
+        ul#content {
+            overflow-y: auto;
+            h1.table-title {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                text-align: center;
+                font-size: 1.2rem;
+                font-weight: bold;
+                padding: 0 20px 0 10px;
+                color: white;
+
+                &:hover {
+                    cursor: pointer;
+                    color: $bgColor;
+                    background-color: $fgColor;
+                }
+
+                &:active {
+                    color: darken($bgColor, 10%);
+                    background-color: lighten($fgColor, 10%);
+                }
+
+                &::after {
+                    font-size: 1rem;
+                    content: 'v';
+                }
+
+                &.is-active {
+                    color: black;
+                    background-color: white;
+
+                    &::after {
+                        content: '^';
+                    }
+                }
+            }
+
+            ul.table-columns {
+                display: none;
+                user-select: none;
+                position: relative;
+                padding: 0 20px;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 2px;
+                    height: 100%;
+                    background-color: white;
+                }
+
+                &.is-active {
+                    display: flex;
+                    justify-content: flex-start;
+                    flex-direction: column;
+
+                    li {
+                        width: 100%;
+                        font-weight: bold;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        span {
+                            text-transform: uppercase;
+
+                            &.type-int {
+                                color: lighten($msgColor, 10%);
+                            }
+
+                            &.type-float {
+                                color: #c02f90;
+                            }
+
+                            &.type-text {
+                                color: #63e45e;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     main#editor {

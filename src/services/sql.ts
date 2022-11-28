@@ -3,12 +3,16 @@ import initSqlJs, { Database, QueryExecResult } from 'sql.js';
 
 import ColumnSet from '../interfaces/ColumnSet';
 import SqlResult from '../interfaces/SqlResult';
-import TableDescriptor from '../interfaces/TableDescriptor';
+import Schema, { TableDescriptor } from '../interfaces/Schema';
+
+interface InternalTableDescriptor {
+    [tableName: string]: ColumnSet[]
+}
 
 const STATIC_ASSET = (file: string) => `/sql/${file}`;
 
 export default async function SQL() {
-    const tables: TableDescriptor = {};
+    const tables: InternalTableDescriptor = {};
 
     const builder = await initSqlJs({
         locateFile: STATIC_ASSET
@@ -16,7 +20,7 @@ export default async function SQL() {
 
     let db: Database = new builder.Database();
 
-    function getTable(tableName: string) {
+    function getTable(tableName: string): TableDescriptor {
         if (!tables[tableName])
             throw new Error(`Table ${tableName} not exist`);
 
@@ -26,7 +30,7 @@ export default async function SQL() {
         };
     }
 
-    function getTables() {
+    function getTables(): Schema {
         return Object.entries(tables).map(([key, value]) => ({
             tableName: key,
             columns: value

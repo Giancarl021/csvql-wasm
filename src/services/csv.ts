@@ -54,7 +54,7 @@ export default function (
 
         const columns = Columns(
             headers,
-            (props.skipFirstLine ? lines.slice(1) : lines).map(row =>
+            (props.skipFirstLine ? lines.slice(2) : lines.slice(1)).map(row =>
                 rowCaster(rows.split(row))
             ),
             Math.min(lines.length, 100)

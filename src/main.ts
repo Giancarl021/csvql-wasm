@@ -23,12 +23,18 @@ async function main() {
 
     editor.restoreContent();
 
-    await csv.parse('Col1,Col2,Col3\n1,2,3\n4,5,6', {
+    await csv.parse('Col1,Col2,Col3\n1.10,2,3\n4,5,xalabaias', {
         tableName: 'test'
+    });
+
+    await csv.parse('Col1,Col2,Col3\n1.10,2,3\n4,5,xalabaias', {
+        tableName: 'test2'
     });
 
     view.onExecAll(runQuery(QueryType.AllContent));
     view.onExecSelection(runQuery(QueryType.SelectionContent));
+
+    view.setSchema(sql.tables.all());
 
     view.onDownload(() => {
         download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');

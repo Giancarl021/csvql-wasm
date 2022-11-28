@@ -1,11 +1,12 @@
 import { SqlMultiResults, SqlResults } from './../interfaces/SqlResult';
 import ViewElements from '../interfaces/ViewElements';
-import TableDescriptor from '../interfaces/TableDescriptor';
+import Schema from '../interfaces/Schema';
 
 interface ResultElements {
     tabs: HTMLElement;
     content: HTMLElement;
     contents: (HTMLTableElement | HTMLDivElement)[];
+    tableContent: HTMLUListElement;
 }
 
 export default function () {
@@ -38,14 +39,50 @@ export default function () {
     const resultElements = {
         tabs: elements.results.querySelector('.tabs')!,
         content: elements.results.querySelector('.content')!,
-        contents: []
+        contents: [],
+        tableContent: elements.tables.querySelector('ul#content') as HTMLUListElement
     } as ResultElements;
 
     elements.commands.clearResults.onclick = () => clearResults();
 
-    function setSchema(descriptor: TableDescriptor) {
-        for (const table in descriptor) {
-            const columns = descriptor[table];
+    function setSchema(descriptor: Schema) {
+        resultElements.tableContent.innerHTML = '';
+
+        for (const table of descriptor) {
+            const element = document.createElement('li');
+
+            const tableName = document.createElement('h1');
+            tableName.classList.add('table-title');
+            tableName.textContent = table.tableName;
+
+            const columns = document.createElement('ul');
+            columns.classList.add('table-columns');
+
+            tableName.onclick = () => {
+                const wasActive = tableName.classList.contains('is-active'); 
+
+                resultElements
+                    .tableContent
+                    .querySelectorAll('.is-active')
+                    .forEach(el => el.classList.remove('is-active'));
+
+                if (!wasActive) {
+                    tableName.classList.add('is-active');
+                    columns.classList.add('is-active');
+                }
+            };
+
+            for (const column of table.columns) {
+                const columnElement = document.createElement('li');
+                columnElement.innerHTML = `${column.name} <span class="type-${column.type}">${column.type}</span>`;
+
+                columns.appendChild(columnElement);
+            }
+
+            element.appendChild(tableName);
+            element.appendChild(columns);
+
+            resultElements.tableContent.appendChild(element);
         }
     }
 
@@ -310,6 +347,7 @@ export default function () {
         onExecAll,
         onDownload,
         onExecSelection,
+        setSchema,
         clearResults
     };
 }
