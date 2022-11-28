@@ -6,6 +6,9 @@ interface ViewElements {
         execAll: HTMLButtonElement;
         execSelection: HTMLButtonElement;
         clearResults: HTMLButtonElement;
+        downloadFile: HTMLButtonElement;
+        uploadFile: HTMLButtonElement;
+        uploadCsv: HTMLButtonElement;
     }
 };
 

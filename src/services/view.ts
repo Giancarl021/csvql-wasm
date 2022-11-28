@@ -1,5 +1,6 @@
 import { SqlMultiResults, SqlResults } from './../interfaces/SqlResult';
 import ViewElements from '../interfaces/ViewElements';
+import TableDescriptor from '../interfaces/TableDescriptor';
 
 interface ResultElements {
     tabs: HTMLElement;
@@ -21,6 +22,15 @@ export default function () {
             ) as HTMLButtonElement,
             clearResults: document.querySelector(
                 'section#commands button#btn-clear'
+            ) as HTMLButtonElement,
+            downloadFile: document.querySelector(
+                'section#commands button#btn-download'
+            ) as HTMLButtonElement,
+            uploadFile: document.querySelector(
+                'section#commands button#btn-upload'
+            ) as HTMLButtonElement,
+            uploadCsv: document.querySelector(
+                'section#commands button#btn-upload-csv'
             ) as HTMLButtonElement
         }
     };
@@ -32,6 +42,12 @@ export default function () {
     } as ResultElements;
 
     elements.commands.clearResults.onclick = () => clearResults();
+
+    function setSchema(descriptor: TableDescriptor) {
+        for (const table in descriptor) {
+            const columns = descriptor[table];
+        }
+    }
 
     function setResults(results: SqlMultiResults) {
         clearResults();
@@ -279,12 +295,21 @@ export default function () {
         };
     }
 
+    function onDownload(callback: () => void) {
+        elements.commands.downloadFile.onclick = () => {
+            elements.commands.downloadFile.classList.add('disabled');
+            callback();
+            elements.commands.downloadFile.classList.remove('disabled');
+        };
+    }
+
     return {
         elements,
         setResults,
         setError,
         onExecAll,
-        clearResults,
-        onExecSelection
+        onDownload,
+        onExecSelection,
+        clearResults
     };
 }

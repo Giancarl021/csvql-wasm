@@ -1,5 +1,5 @@
 import { SqlMultiResults, SqlResults } from './../interfaces/SqlResult';
-import initSqlJs, { QueryExecResult } from 'sql.js';
+import initSqlJs, { Database, QueryExecResult } from 'sql.js';
 
 import ColumnSet from '../interfaces/ColumnSet';
 import SqlResult from '../interfaces/SqlResult';
@@ -14,7 +14,7 @@ export default async function SQL() {
         locateFile: STATIC_ASSET
     });
 
-    const db = new builder.Database();
+    let db: Database = new builder.Database();
 
     function getTable(tableName: string) {
         if (!tables[tableName])
@@ -66,9 +66,19 @@ export default async function SQL() {
         return results;
     }
 
+    function fromBinary(binary: Uint8Array) {
+        db = new builder.Database(binary);
+    }
+
+    function toBinary(): Uint8Array {
+        return db.export();
+    }
+
     return {
         database: db,
         query,
+        fromBinary,
+        toBinary,
         tables: {
             get: getTable,
             set: setTable,

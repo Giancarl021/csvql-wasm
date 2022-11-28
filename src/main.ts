@@ -3,6 +3,7 @@ import 'bulma';
 import 'bulmaswatch/slate/bulmaswatch.min.css';
 import './scss/main.scss';
 import 'setimmediate';
+import download from 'downloadjs';
 
 import Sql from './services/sql';
 import Csv from './services/csv';
@@ -15,8 +16,8 @@ enum QueryType {
 };
 
 async function main() {
-    const view = View();
     const sql = await Sql();
+    const view = View();
     const csv = Csv(sql);
     const editor = Editor(view.elements.editor);
 
@@ -28,6 +29,10 @@ async function main() {
 
     view.onExecAll(runQuery(QueryType.AllContent));
     view.onExecSelection(runQuery(QueryType.SelectionContent));
+
+    view.onDownload(() => {
+        download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');
+    });
 
     view.setResults(sql.query('SELECT * FROM test; SELECT 1; SELECT 2; SELECT 4; SELECT 3; SELECT 6;'));
 

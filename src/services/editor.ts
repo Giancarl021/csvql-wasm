@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor';
+import debounce, { seconds } from '../util/debounce';
 
 const STORAGE_KEY = 'editor::content';
 
@@ -10,6 +11,10 @@ export default function (element: HTMLElement) {
     });
 
     const model = editor.getModel()!;
+
+    editor.onDidChangeModelContent(debounce(() => {
+        localStorage.setItem(STORAGE_KEY, editor.getValue());
+    }, seconds(3)));
 
     function setContent(content: string) {
         editor.setValue(content);

@@ -12,6 +12,7 @@
     "devDependencies": {
         "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
         "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
+        "@types/downloadjs": "^1.4.3",
         "@types/sql.js": "^1.4.4",
         "prettier": "^2.7.1",
         "typescript": "^4.6.4",
@@ -23,6 +24,7 @@
         "bulma": "^0.9.4",
         "bulmaswatch": "^0.8.1",
         "csv-string": "^4.1.1",
+        "downloadjs": "^1.4.7",
         "fill-object": "^0.1.2",
         "monaco-editor": "^0.34.1",
         "sass": "^1.56.1",
