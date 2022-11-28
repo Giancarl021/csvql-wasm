@@ -9,6 +9,7 @@ import download from 'downloadjs';
 import Sql from './services/sql';
 import Csv from './services/csv';
 import View from './services/view';
+import Files from './services/files';
 import Editor from './services/editor';
 
 import { SqlMultiResults } from './interfaces/SqlResult';
@@ -24,6 +25,7 @@ async function main() {
 
     const sql = await Sql();
     const view = View();
+    const files = Files();
     const csv = Csv(sql);
     const editor = Editor(view.elements.editor);
 
@@ -44,6 +46,18 @@ async function main() {
 
     view.onDownload(() => {
         download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');
+    });
+
+    files.onCsvUploaded(async (content, filename) => {
+        await csv.parse(content, {
+            tableName: filename.replace(/\.[^/.]+$/, '')
+        });
+        updateSchema();
+    });
+
+    files.onSqliteUploaded(content => {
+        sql.fromBinary(content);
+        updateSchema();
     });
 
     view.setResults(sql.query('SELECT * FROM test1; SELECT 1; SELECT 2; SELECT 4; SELECT 3; SELECT 6;'));
