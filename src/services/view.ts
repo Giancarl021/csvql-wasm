@@ -89,6 +89,10 @@ export default function () {
     function setResults(results: SqlMultiResults) {
         clearResults();
 
+        if (!results.length) {
+            addTab('No return', false);
+        }
+
         for (const result of results) addTab(result);
 
         if (resultElements.contents.length > 0) setActiveTab(0);
@@ -99,7 +103,7 @@ export default function () {
     function setError(message: string) {
         clearResults();
 
-        addTab(message);
+        addTab(message, true);
 
         setActiveTab(0);
 
@@ -215,8 +219,8 @@ export default function () {
         renameTab(tab, `#${index + 1}`);
     }
 
-    function addTab(result: SqlResults | string) {
-        const isError = typeof result === 'string';
+    function addTab(result: SqlResults | string, isError: boolean = false) {
+        const isSingleValue = typeof result === 'string';
         const tab = document.createElement('div');
 
         tab.classList.add('tab');
@@ -226,7 +230,7 @@ export default function () {
         const tabTitle = document.createElement('span');
 
         tabTitle.classList.add('tab-title');
-        tabTitle.textContent = `#${tabIndex + 1}${isError ? '(!)' : ''}`;
+        tabTitle.textContent = `#${tabIndex + 1}${isSingleValue ? (isError ? '(!)' : '(*)') : ''}`;
         tabTitle.onclick = () =>
             setActiveTab(Number(tab.getAttribute('data-index')!));
 
@@ -239,7 +243,7 @@ export default function () {
 
         tab.appendChild(tabTitle);
 
-        if (!isError) {
+        if (!isSingleValue) {
             const pinButton = document.createElement('span');
             pinButton.classList.add('tag', 'btn-pin');
             pinButton.textContent = 'V';
@@ -253,9 +257,10 @@ export default function () {
 
         tab.setAttribute('data-index', String(tabIndex));
 
-        const results: SqlResults = isError ? [{ Error: result }] : result;
+        const results: SqlResults = isSingleValue ? [{ [isError ? 'Error' : 'Message']: result }] : result;
 
-        if (isError) tab.classList.add('error');
+        if (isSingleValue)
+            tab.classList.add(isError ? 'error' : 'message');
 
         const table = document.createElement('table');
         table.classList.add(
@@ -265,7 +270,9 @@ export default function () {
             'is-fullwidth'
         );
 
-        if (isError) table.classList.add('error');
+        if (isSingleValue) {
+            table.classList.add(isError ? 'error' : 'message');
+        }
 
         const tbody = document.createElement('tbody');
 

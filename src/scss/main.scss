@@ -232,12 +232,21 @@ body {
                     color: darken($fgColor, 15%);
                 }
 
+                &.message {
+                    border-radius: 0;
+                    color: lighten($fgColor, 15%);
+                }
+
                 &.is-active {
                     background-color: $fgColor;
                     color: $bgColor;
 
                     &.error {
                         color: $errColor;
+                    }
+
+                    &.message {
+                        color: $msgColor;
                     }
 
                     &:hover {
@@ -309,6 +318,13 @@ body {
 
                 &, th {
                     color: lighten($errColor, 30%);
+                }
+            }
+
+            table.message {
+
+                &, th {
+                    color: lighten($msgColor, 30%);
                 }
             }
         }

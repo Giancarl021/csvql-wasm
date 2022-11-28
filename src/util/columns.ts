@@ -34,8 +34,6 @@ export default function (
             const data = row[key];
             if (!data) continue;
 
-            console.log(columns, rows, depth);
-
             switch (typeof data) {
                 case 'number':
                     if (Number.isInteger(data)) {
