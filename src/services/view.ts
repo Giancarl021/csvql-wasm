@@ -31,10 +31,21 @@ export default function () {
     }
 
     function clearResults() {
-        document.body.classList.add('no-results');
-        resultElements.tabs.innerHTML = '';
-        resultElements.content.innerHTML = '';
-        resultElements.contents.length = 0;
+        const hasPinned = Boolean(resultElements.tabs.querySelector('div.tab.pinned'));
+
+        if (hasPinned) {
+            const nonPinnedTabs = Array.from(resultElements.tabs.querySelectorAll('div.tab:not(.pinned)')) as HTMLElement[];
+
+            for (const tab of nonPinnedTabs) {
+                const index = Number(tab.getAttribute('data-index')!);
+                removeTab(index);
+            }
+        } else {
+            document.body.classList.add('no-results');
+            resultElements.tabs.innerHTML = '';
+            resultElements.content.innerHTML = '';
+            resultElements.contents.length = 0;
+        }
     }
 
     function changeTabIndex(index: number, newIndex: number) {

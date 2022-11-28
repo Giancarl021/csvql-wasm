@@ -21,7 +21,6 @@ async function main() {
     });
 
     view.setResults(sql.query('SELECT * FROM test; SELECT 1; SELECT 2; SELECT 4; SELECT 3; SELECT 6;'));
-    
 }
 
 main().catch(console.error);
