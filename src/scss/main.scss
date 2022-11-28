@@ -3,8 +3,10 @@
 $shadow: 0 0 20px #0004;
 $fgColor: #aaa;
 $bgColor: #3A3F44;
-$msgColor: adjust-color($color: #3273dc, $saturation: -10%);
-$errColor: adjust-color($color: #EE5F5B, $saturation: -10%);
+$errColor: #7A3F44;
+$msgColor: #3A3FC4;
+// $msgColor: adjust-color($color: #3273dc, $saturation: -20%);
+// $errColor: adjust-color($color: #EE5F5B, $saturation: -20%);
 
 html,
 body {
@@ -103,8 +105,13 @@ body {
                 align-items: center;
 
                 &:hover {
+                    $bgColor: darken($bgColor, 10%);
                     cursor: pointer;
-                    background-color: darken($bgColor, 10%);
+                    background-color: $bgColor;
+
+                    span.tag {
+                        background-color: $bgColor;
+                    }
                 }
 
                 &.is-active {
@@ -112,7 +119,36 @@ body {
                     color: $bgColor;
 
                     &:hover {
-                        background-color: darken($fgColor, 15%);
+                        $bgColor: darken($fgColor, 15%);
+                        background-color: $bgColor;
+
+                        span.tag {
+                            &.btn-delete,
+                            &.btn-pin {
+                                background-color: $bgColor;
+                            }
+                        }
+                    }
+
+                    span.tag {
+                        $bgColor: darken($fgColor, 20%);
+                        &.btn-delete {
+                            background-color: $fgColor;
+                            color: $errColor;
+
+                            &:hover {
+                                background-color: $bgColor;
+                            }
+                        }
+
+                        &.btn-pin {
+                            background-color: $fgColor;
+                            color: $msgColor;
+
+                            &:hover {
+                                background-color: $bgColor;
+                            }
+                        }
                     }
                 }
 
@@ -122,13 +158,23 @@ body {
                 }
 
                 span.tag {
+                    font-weight: lighter;
                     margin: 0;
                     border-radius: 0;
-                    background-color: $errColor;
-                    color: white;
+                    color: darken($fgColor, 5%);
+
+                    &:first-child {
+                        margin-left: 10px;
+                    }
 
                     &:hover {
-                        background-color: darken($errColor, 10%);
+                        background-color: darken($bgColor, 15%);
+                    }
+                }
+
+                &.pinned {
+                    span.tag.btn-pin {
+                        font-weight: bold;
                     }
                 }
             }

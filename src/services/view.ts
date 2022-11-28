@@ -63,12 +63,15 @@ export default function () {
             changeTabIndex(i, ni);
         }
 
-        const tabs = Array.from(resultElements.tabs.querySelectorAll('.tab:not(.pinned)')).slice(index) as HTMLElement[];
+        const tabs = Array.from(resultElements.tabs.querySelectorAll('div.tab')).slice(index) as HTMLElement[];
 
         for (const tab of tabs) {
+            const prefix = tab.classList.contains('pinned') ? '^' : '#';
+            const index = Number(tab.getAttribute('data-index')) + 1;
+
             renameTab(
                 tab,
-                `#${Number(tab.getAttribute('data-index')) + 1}`
+                `${prefix}${index}`
             );
         }
 
@@ -82,10 +85,35 @@ export default function () {
         }
     }
 
-    // function pinTab(index: number) {
-    //     const tab = elements.tables.children[index];
-    //     tab.classList.add('pinned');
-    // }
+    function pinTab(index: number) {
+        const tab = resultElements.tabs.querySelector(`div.tab[data-index="${index}"]`) as HTMLElement;
+
+        if (!tab) throw new Error(`Tab with index ${index} not found`);
+
+        tab.classList.add('pinned');
+
+        const pinButton = tab.querySelector('span.tag.btn-pin') as HTMLElement;
+
+        pinButton.textContent = '>';
+        pinButton.onclick = () => unpinTab(Number(tab.getAttribute('data-index')!));
+
+        renameTab(tab, `^${index + 1}`);
+    }
+
+    function unpinTab(index: number) {
+        const tab = resultElements.tabs.querySelector(`div.tab[data-index="${index}"]`) as HTMLElement;
+
+        if (!tab) throw new Error(`Tab with index ${index} not found`);
+
+        tab.classList.remove('pinned');
+
+        const pinButton = tab.querySelector('span.tag.btn-pin') as HTMLElement;
+
+        pinButton.textContent = 'V';
+        pinButton.onclick = () => pinTab(Number(tab.getAttribute('data-index')!));
+
+        renameTab(tab, `#${index + 1}`);
+    }
 
     function addTab(result: SqlResults) {
         const tab = document.createElement('div');
@@ -100,12 +128,19 @@ export default function () {
         tabTitle.textContent = `#${tabIndex + 1}`; 
         tabTitle.onclick = () => setActiveTab(Number(tab.getAttribute('data-index')!));
 
+        const pinButton = document.createElement('span');
+        pinButton.classList.add('tag', 'btn-pin');
+        pinButton.textContent = 'V';
+        pinButton.onclick = () => pinTab(Number(tab.getAttribute('data-index')!));
+
         const deleteButton = document.createElement('span');
 
-        deleteButton.classList.add('tag', 'is-delete');
+        deleteButton.classList.add('tag', 'btn-delete');
+        deleteButton.textContent = 'X';
         deleteButton.onclick = () => removeTab(Number(tab.getAttribute('data-index')!));
 
         tab.appendChild(tabTitle);
+        tab.appendChild(pinButton);
         tab.appendChild(deleteButton);
 
         tab.setAttribute('data-index', String(tabIndex));
