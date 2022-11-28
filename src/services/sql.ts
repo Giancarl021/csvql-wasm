@@ -3,42 +3,39 @@ import initSqlJs, { Database, QueryExecResult } from 'sql.js';
 
 import ColumnSet from '../interfaces/ColumnSet';
 import SqlResult from '../interfaces/SqlResult';
-import Schema, { TableDescriptor } from '../interfaces/Schema';
-
-interface InternalTableDescriptor {
-    [tableName: string]: ColumnSet[]
-}
+import Schema from '../interfaces/Schema';
 
 const STATIC_ASSET = (file: string) => `/sql/${file}`;
 
 export default async function SQL() {
-    const tables: InternalTableDescriptor = {};
-
     const builder = await initSqlJs({
         locateFile: STATIC_ASSET
     });
 
     let db: Database = new builder.Database();
 
-    function getTable(tableName: string): TableDescriptor {
-        if (!tables[tableName])
-            throw new Error(`Table ${tableName} not exist`);
+    function getSchema(): Schema {
+        const schema: Schema = [];
+        const tables = query('SELECT name FROM sqlite_master WHERE type=\'table\'')
+            [0]
+            .map(t => t.name);
 
-        return {
-            tableName,
-            columns: tables[tableName]
-        };
-    }
+        for (const table of tables) {
+            const columns =
+                query(`SELECT name, type FROM PRAGMA_TABLE_INFO('${table}')`)
+                [0]
+                .map(c => ({
+                    name: c.name,
+                    type: String(c.type).toLowerCase()
+                }) as ColumnSet);
 
-    function getTables(): Schema {
-        return Object.entries(tables).map(([key, value]) => ({
-            tableName: key,
-            columns: value
-        }))
-    }
+            schema.push({
+                tableName: String(table),
+                columns
+            });
+        }
 
-    function setTable(tableName: string, columns: ColumnSet[]) {
-        tables[tableName] = columns;
+        return schema;
     }
 
     function query(statement: string): SqlMultiResults {
@@ -83,10 +80,6 @@ export default async function SQL() {
         query,
         fromBinary,
         toBinary,
-        tables: {
-            get: getTable,
-            set: setTable,
-            all: getTables
-        }
+        getSchema
     };
 }

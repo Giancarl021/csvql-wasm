@@ -1,8 +1,9 @@
-import { SqlMultiResults } from './interfaces/SqlResult';
 import 'bulma';
 import 'bulmaswatch/slate/bulmaswatch.min.css';
 import './scss/main.scss';
 import 'setimmediate';
+
+import equals from 'deep-equal';
 import download from 'downloadjs';
 
 import Sql from './services/sql';
@@ -10,12 +11,17 @@ import Csv from './services/csv';
 import View from './services/view';
 import Editor from './services/editor';
 
+import { SqlMultiResults } from './interfaces/SqlResult';
+import Schema from './interfaces/Schema';
+
 enum QueryType {
     AllContent,
     SelectionContent
 };
 
 async function main() {
+    let lastSchema: Schema = [];
+
     const sql = await Sql();
     const view = View();
     const csv = Csv(sql);
@@ -24,7 +30,7 @@ async function main() {
     editor.restoreContent();
 
     await csv.parse('Col1,Col2,Col3\n1.10,2,3\n4,5,xalabaias', {
-        tableName: 'test'
+        tableName: 'test1'
     });
 
     await csv.parse('Col1,Col2,Col3\n1.10,2,3\n4,5,xalabaias', {
@@ -34,13 +40,13 @@ async function main() {
     view.onExecAll(runQuery(QueryType.AllContent));
     view.onExecSelection(runQuery(QueryType.SelectionContent));
 
-    view.setSchema(sql.tables.all());
+    updateSchema();
 
     view.onDownload(() => {
         download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');
     });
 
-    view.setResults(sql.query('SELECT * FROM test; SELECT 1; SELECT 2; SELECT 4; SELECT 3; SELECT 6;'));
+    view.setResults(sql.query('SELECT * FROM test1; SELECT 1; SELECT 2; SELECT 4; SELECT 3; SELECT 6;'));
 
     function runQuery(type: QueryType): () => void {
         let contentCallback: () => string;
@@ -68,7 +74,18 @@ async function main() {
             } catch (err) {
                 view.setError((err as Error).message);
             }
+
+            updateSchema();
         }
+    }
+
+    function updateSchema() {
+        const schema = sql.getSchema();
+
+        if (equals(schema, lastSchema)) return;
+
+        view.setSchema(sql.getSchema());
+        lastSchema = schema;
     }
 }
 

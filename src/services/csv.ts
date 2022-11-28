@@ -91,8 +91,6 @@ export default function (
                 .on('error', reject)
                 .on('end', resolve);
         });
-
-        sql.tables.set(props.tableName, columns);
     }
 
     return {

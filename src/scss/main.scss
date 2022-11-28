@@ -74,6 +74,8 @@ body {
 
         ul#content {
             overflow-y: auto;
+            user-select: none;
+            
             h1.table-title {
                 display: flex;
                 align-items: center;
@@ -112,7 +114,6 @@ body {
 
             ul.table-columns {
                 display: none;
-                user-select: none;
                 position: relative;
                 padding: 0 20px;
 
