@@ -46,7 +46,7 @@ export default function (options: CsvParserOptions) {
                 const item = row[i],
                     header = headers[i];
 
-                let parsedItem = infer(item);
+                let parsedItem = infer(String(item));
 
                 if (typeof parsedItem === 'undefined') parsedItem = null;
                 else if (typeof parsedItem === 'boolean') parsedItem = parsedItem ? 1 : 0;

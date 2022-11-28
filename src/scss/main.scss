@@ -366,6 +366,10 @@ body {
         }
     }
 
+    div#hidden {
+        display: none;
+    }
+
     &.no-results {
         grid-template-rows: $headerHeight calc($halfHeight * 2) $commandsHeight 0px calc(#{ $headerHeight} / 2);
 
