@@ -18,7 +18,7 @@ export default function (element: HTMLElement) {
         }, seconds(3))
     );
 
-    function onExec(callback: () => void) {
+    function onExec(callback: () => Promise<void> | void) {
         editor.addCommand(
             monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
             callback

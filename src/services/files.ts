@@ -1,8 +1,9 @@
 export type CsvCallback = (data: string, filename: string) => void;
 export type SqliteCallback = (data: Uint8Array) => void;
 export type ErrorCallback = (err: Error) => void;
-export type DragCallback = () => void;
+export type DragCallback = () => Promise<void> | void;
 export type CancelCallback = DragCallback;
+export type WillParseCallback = DragCallback;
 
 export default function (inputElement: HTMLInputElement) {
     const csvCallbacks: CsvCallback[] = [];
@@ -10,6 +11,7 @@ export default function (inputElement: HTMLInputElement) {
     const errorCallbacks: ErrorCallback[] = [];
     const cancelCallbacks: CancelCallback[] = [];
     const dragCallbacks: DragCallback[] = [];
+    const willParseCallbacks: WillParseCallback[] = [];
 
     let dragCounter = 0;
 
@@ -59,6 +61,8 @@ export default function (inputElement: HTMLInputElement) {
     async function parseFiles(files: File[]) {
         if (files.length === 0) return;
 
+        willParseCallbacks.forEach(cb => cb());
+
         for (const file of files) {
             if (file.size >= 1e9) {
                 errorCallbacks.forEach(cb =>
@@ -81,6 +85,10 @@ export default function (inputElement: HTMLInputElement) {
                 sqliteCallbacks.forEach(cb => cb(bin.value!));
             }
         }
+    }
+
+    function onWillParse(callback: DragCallback) {
+        willParseCallbacks.push(callback);
     }
 
     function fireUpload(...extensions: string[]) {
@@ -111,6 +119,7 @@ export default function (inputElement: HTMLInputElement) {
     return {
         onSqliteUploaded,
         onCsvUploaded,
+        onWillParse,
         onError,
         onCancel,
         onDrag,

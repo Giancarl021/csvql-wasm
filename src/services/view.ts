@@ -347,7 +347,7 @@ export default function () {
         resultElements.content.appendChild(content);
     }
 
-    function onExecAll(callback: () => void) {
+    function onExecAll(callback: () => Promise<void> | void) {
         elements.commands.execAll.onclick = () => {
             elements.commands.execAll.classList.add('disabled');
             callback();
@@ -355,7 +355,7 @@ export default function () {
         };
     }
 
-    function onExecSelection(callback: () => void) {
+    function onExecSelection(callback: () => Promise<void> | void) {
         elements.commands.execSelection.onclick = () => {
             elements.commands.execSelection.classList.add('disabled');
             callback();
@@ -363,7 +363,7 @@ export default function () {
         };
     }
 
-    function onDownload(callback: () => void) {
+    function onDownload(callback: () => Promise<void> | void) {
         elements.commands.downloadFile.onclick = () => {
             elements.commands.downloadFile.classList.add('disabled');
             callback();
@@ -371,7 +371,7 @@ export default function () {
         };
     }
 
-    function onUploadCsv(callback: () => void) {
+    function onUploadCsv(callback: () => Promise<void> | void) {
         elements.commands.uploadCsv.onclick = () => {
             elements.commands.uploadCsv.classList.add('disabled');
             callback();
@@ -379,7 +379,7 @@ export default function () {
         };
     }
 
-    function onUploadSqlite(callback: () => void) {
+    function onUploadSqlite(callback: () => Promise<void> | void) {
         elements.commands.uploadSqlite.onclick = () => {
             elements.commands.uploadSqlite.classList.add('disabled');
             callback();

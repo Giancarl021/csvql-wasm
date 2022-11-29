@@ -52,9 +52,12 @@ async function main() {
         view.showModal('error', err);
     });
 
-    files.onCsvUploaded(async (content, filename) => {
+    files.onWillParse(() => {
         view.hideModal('dropArea');
+        view.showModal('loading');
+    });
 
+    files.onCsvUploaded(async (content, filename) => {
         try {
             await csv.parse(content, {
                 tableName: filename.replace(/\.[^/.]+$/, '')
@@ -69,8 +72,6 @@ async function main() {
     });
 
     files.onSqliteUploaded(content => {
-        view.hideModal('dropArea');
-
         try {
             sql.fromBinary(content);
             updateSchema();
@@ -138,7 +139,8 @@ async function main() {
                 throw new Error('Invalid QueryType provided');
         }
 
-        return () => {
+        return async () => {
+            view.showModal('loading');
             const content = contentCallback();
 
             if (!content) return;
@@ -153,6 +155,7 @@ async function main() {
             }
 
             updateSchema();
+            view.hideModal('loading');
         };
     }
 
