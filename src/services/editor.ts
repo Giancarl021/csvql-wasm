@@ -16,6 +16,10 @@ export default function (element: HTMLElement) {
         localStorage.setItem(STORAGE_KEY, editor.getValue());
     }, seconds(3)));
 
+    function onExec(callback: () => void) {
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, callback);
+    }
+
     function setContent(content: string) {
         editor.setValue(content);
     }
@@ -57,6 +61,7 @@ export default function (element: HTMLElement) {
         setContent,
         restoreContent,
         getAllContent,
-        getSelectionContent
+        getSelectionContent,
+        onExec
     };
 }

@@ -17,7 +17,8 @@ import Schema from './interfaces/Schema';
 
 enum QueryType {
     AllContent,
-    SelectionContent
+    SelectionContent,
+    Auto
 };
 
 async function main() {
@@ -30,6 +31,8 @@ async function main() {
     const files = Files(view.elements.hiddenFileInput);
 
     editor.restoreContent();
+
+    editor.onExec(runQuery(QueryType.Auto));
 
     view.onExecAll(runQuery(QueryType.AllContent));
     view.onExecSelection(runQuery(QueryType.SelectionContent));
@@ -46,6 +49,8 @@ async function main() {
     });
 
     files.onCsvUploaded(async (content, filename) => {
+        view.hideModal('dropArea');
+        
         try {
             await csv.parse(content, {
                 tableName: filename.replace(/\.[^/.]+$/, '')
@@ -55,10 +60,13 @@ async function main() {
         }
 
         updateSchema();
+
         view.hideModal('loading');
     });
 
     files.onSqliteUploaded(content => {
+        view.hideModal('dropArea');
+
         try {
             sql.fromBinary(content);
             updateSchema();
@@ -70,7 +78,12 @@ async function main() {
     });
 
     files.onCancel(() => {
+        view.hideModal('dropArea');
         view.hideModal('loading');
+    });
+
+    files.onDrag(() => {
+        view.showModal('dropArea');
     });
 
     view.onUploadCsv(() => {
@@ -83,6 +96,23 @@ async function main() {
         files.fireUpload('.sqlite', '.db', '.sqlite3');
     });
 
+    document.onkeydown = (event) => {
+        if (event.ctrlKey && event.key === 'o') {
+            event.preventDefault();
+            view.showModal('loading');
+            files.fireUpload('.csv', '.sqlite', '.db', '.sqlite3');
+        }
+    }
+
+    document.onkeydown = (event) => {
+        if (event.ctrlKey && event.key === 's') {
+            event.preventDefault();
+            view.showModal('loading');
+            download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');
+            view.hideModal('loading');
+        }
+    }
+
     function runQuery(type: QueryType): () => void {
         let contentCallback: () => string;
         switch (type) {
@@ -91,6 +121,9 @@ async function main() {
                 break;
             case QueryType.SelectionContent:
                 contentCallback = editor.getSelectionContent;
+                break;
+            case QueryType.Auto:
+                contentCallback = () => editor.getSelectionContent() || editor.getAllContent();
                 break;
             default:
                 throw new Error('Invalid QueryType provided');
