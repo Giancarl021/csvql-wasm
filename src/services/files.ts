@@ -29,7 +29,7 @@ export default function (inputElement: HTMLInputElement) {
         cancelCallbacks.forEach(cb => cb());
     };
 
-    document.body.ondragenter = (event) => {
+    document.body.ondragenter = event => {
         event.preventDefault();
         event.stopPropagation();
         dragCounter++;
@@ -41,9 +41,9 @@ export default function (inputElement: HTMLInputElement) {
         if (dragCounter === 0) {
             cancelCallbacks.forEach(cb => cb());
         }
-    }
+    };
 
-    document.body.ondragover = (event) => {
+    document.body.ondragover = event => {
         event.preventDefault();
         event.stopPropagation();
     };
@@ -55,13 +55,15 @@ export default function (inputElement: HTMLInputElement) {
         const files = Array.from(event.dataTransfer?.files ?? []);
 
         if (files) await parseFiles(files);
-    }
+    };
     async function parseFiles(files: File[]) {
         if (files.length === 0) return;
 
         for (const file of files) {
-            if (file.size >= 1e+9) {
-                errorCallbacks.forEach(cb => cb(new Error(`File ${file.name} exceeds 1GB`)));
+            if (file.size >= 1e9) {
+                errorCallbacks.forEach(cb =>
+                    cb(new Error(`File ${file.name} exceeds 1GB`))
+                );
                 return;
             }
 
@@ -69,14 +71,14 @@ export default function (inputElement: HTMLInputElement) {
                 const content = await file.text();
 
                 if (!content) continue;
-                
+
                 csvCallbacks.forEach(cb => cb(content, file.name));
             } else {
                 const bin = await file.stream().getReader().read();
 
                 if (!bin.value) continue;
 
-                sqliteCallbacks.forEach(cb => cb(bin.value));
+                sqliteCallbacks.forEach(cb => cb(bin.value!));
             }
         }
     }

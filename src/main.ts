@@ -19,7 +19,7 @@ enum QueryType {
     AllContent,
     SelectionContent,
     Auto
-};
+}
 
 async function main() {
     let lastSchema: Schema = [];
@@ -39,7 +39,11 @@ async function main() {
 
     view.onDownload(() => {
         view.showModal('loading');
-        download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');
+        download(
+            sql.toBinary(),
+            `csvql-${Date.now()}.sqlite`,
+            'application/octet-stream'
+        );
         view.hideModal('loading');
     });
 
@@ -50,7 +54,7 @@ async function main() {
 
     files.onCsvUploaded(async (content, filename) => {
         view.hideModal('dropArea');
-        
+
         try {
             await csv.parse(content, {
                 tableName: filename.replace(/\.[^/.]+$/, '')
@@ -96,22 +100,26 @@ async function main() {
         files.fireUpload('.sqlite', '.db', '.sqlite3');
     });
 
-    document.onkeydown = (event) => {
+    document.onkeydown = event => {
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             view.showModal('loading');
             files.fireUpload('.csv', '.sqlite', '.db', '.sqlite3');
         }
-    }
+    };
 
-    document.onkeydown = (event) => {
+    document.onkeydown = event => {
         if (event.ctrlKey && event.key === 's') {
             event.preventDefault();
             view.showModal('loading');
-            download(sql.toBinary(), `csvql-${Date.now()}.sqlite`, 'application/octet-stream');
+            download(
+                sql.toBinary(),
+                `csvql-${Date.now()}.sqlite`,
+                'application/octet-stream'
+            );
             view.hideModal('loading');
         }
-    }
+    };
 
     function runQuery(type: QueryType): () => void {
         let contentCallback: () => string;
@@ -123,7 +131,8 @@ async function main() {
                 contentCallback = editor.getSelectionContent;
                 break;
             case QueryType.Auto:
-                contentCallback = () => editor.getSelectionContent() || editor.getAllContent();
+                contentCallback = () =>
+                    editor.getSelectionContent() || editor.getAllContent();
                 break;
             default:
                 throw new Error('Invalid QueryType provided');
@@ -144,7 +153,7 @@ async function main() {
             }
 
             updateSchema();
-        }
+        };
     }
 
     function updateSchema() {

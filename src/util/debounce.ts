@@ -1,4 +1,7 @@
-export default function <T extends (...args: any[]) => void | Promise<void>>(callback: T, ms: number) {
+export default function <T extends (...args: any[]) => void | Promise<void>>(
+    callback: T,
+    ms: number
+) {
     let timeout: NodeJS.Timeout | null;
 
     return function (...args: any[]) {

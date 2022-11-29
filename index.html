@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <link rel="icon" type="image/png" href="/logo.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>CSVQL WASM</title>
         <script type="module" src="/src/main.ts"></script>
@@ -16,32 +16,34 @@
             <h2 class="subtitle">CSV as simple as SQL.</h2>
         </header>
         <aside id="tables">
-            <ul id="content">
-
-            </ul>
+            <ul id="content"></ul>
         </aside>
         <main id="editor"></main>
         <section id="commands">
             <button class="command" id="btn-upload-csv">Upload CSV file</button>
             <button class="command" id="btn-upload">Upload SQLite file</button>
-            <button class="command" id="btn-download">Download SQLite file</button>
+            <button class="command" id="btn-download">
+                Download SQLite file
+            </button>
             <button class="command" id="btn-clear">Clear</button>
-            <button class="command" id="btn-exec-selection">Run selection</button>
+            <button class="command" id="btn-exec-selection">
+                Run selection
+            </button>
             <button class="command" id="btn-exec-all">Run all</button>
         </section>
         <section id="results">
-            <div class="tabs">
-                
-            </div>
-            <div class="content">
-
-            </div>
+            <div class="tabs"></div>
+            <div class="content"></div>
         </section>
         <footer id="copyright">
             <span>
                 Made by
                 <a href="https://github.com/Giancarl021">Giancarl021</a> in 2022
-                <a class="subtitle" href="https://github.com/Giancarl021/csvql-wasm">GitHub Repository</a>
+                <a
+                    class="subtitle"
+                    href="https://github.com/Giancarl021/csvql-wasm"
+                    >GitHub Repository</a
+                >
             </span>
         </footer>
         <div id="hidden">
@@ -64,7 +66,9 @@
         <div id="loading" class="modal">
             <div class="modal-background"></div>
             <div class="modal-content">
-                <progress class="progress is-medium is-light" max="100">Loading...</progress>
+                <progress class="progress is-medium is-light" max="100">
+                    Loading...
+                </progress>
             </div>
         </div>
     </body>

@@ -1,10 +1,10 @@
-@use "sass:color";
+@use 'sass:color';
 
 $shadow: 0 0 20px #0004;
 $fgColor: #aaa;
-$bgColor: #3A3F44;
-$errColor: #7A3F44;
-$msgColor: #3A3FC4;
+$bgColor: #3a3f44;
+$errColor: #7a3f44;
+$msgColor: #3a3fc4;
 
 html,
 body {
@@ -13,13 +13,18 @@ body {
 
 body {
     $headerHeight: 80px;
-    $tablesWidth: max(#{ 100% / 5 }, 300px);
+    $tablesWidth: max(#{100% / 5}, 300px);
     $commandsHeight: 30px;
-    $halfHeight: calc(50% - #{$headerHeight} / 2 - #{ $headerHeight} / 4 - #{$commandsHeight} / 2);
+    $halfHeight: calc(
+        50% - #{$headerHeight} / 2 - #{$headerHeight} / 4 - #{$commandsHeight} /
+            2
+    );
     height: 100vh;
     display: grid;
     grid-template-columns: $tablesWidth calc(100% - $tablesWidth);
-    grid-template-rows: $headerHeight $halfHeight $commandsHeight $halfHeight calc(#{ $headerHeight} / 2);
+    grid-template-rows: $headerHeight $halfHeight $commandsHeight $halfHeight calc(
+            #{$headerHeight} / 2
+        );
 
     header#banner {
         grid-row: 1 / 2;
@@ -31,13 +36,13 @@ body {
         flex-direction: column;
         box-shadow: $shadow;
 
-        >* {
+        > * {
             margin: 0;
             padding: 0;
         }
 
         h1 {
-            $spacing: .5rem;
+            $spacing: 0.5rem;
             width: 100%;
             text-align: center;
             position: relative;
@@ -49,20 +54,19 @@ body {
 
             img {
                 width: auto;
-                height: calc(#{ $headerHeight } / 2.5);
+                height: calc(#{$headerHeight} / 2.5);
             }
 
             &::after {
                 content: '';
                 position: absolute;
-                top: calc(100% + #{ $spacing } / 2);
+                top: calc(100% + #{$spacing} / 2);
                 display: block;
                 left: 50%;
                 transform: translateX(-50%);
                 width: 90%;
                 height: 1px;
                 background-color: currentColor;
-
             }
         }
     }
@@ -255,7 +259,6 @@ body {
                         background-color: $bgColor;
 
                         span.tag {
-
                             &.btn-delete,
                             &.btn-pin {
                                 background-color: $bgColor;
@@ -318,7 +321,6 @@ body {
             overflow: auto;
 
             table.error {
-
                 &,
                 th {
                     color: lighten($errColor, 30%);
@@ -326,7 +328,6 @@ body {
             }
 
             table.message {
-
                 &,
                 th {
                     color: lighten($msgColor, 30%);
@@ -409,7 +410,9 @@ body {
     }
 
     &.no-results {
-        grid-template-rows: $headerHeight calc($halfHeight * 2) $commandsHeight 0px calc(#{ $headerHeight} / 2);
+        grid-template-rows: $headerHeight calc($halfHeight * 2) $commandsHeight 0px calc(
+                #{$headerHeight} / 2
+            );
 
         section#results {
             display: none;

@@ -1,7 +1,7 @@
 import ColumnSet from './ColumnSet';
 
 interface TableDescriptor {
-    [tableName: string]: ColumnSet[]
+    [tableName: string]: ColumnSet[];
 }
 
 export default TableDescriptor;

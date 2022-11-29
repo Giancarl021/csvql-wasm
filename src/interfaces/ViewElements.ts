@@ -15,7 +15,7 @@ interface ViewElements {
         loading: HTMLDivElement;
         error: HTMLDivElement;
         dropArea: HTMLDivElement;
-    }
-};
+    };
+}
 
 export default ViewElements;

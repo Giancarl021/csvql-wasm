@@ -6,12 +6,13 @@
     "scripts": {
         "dev": "vite --port 3000",
         "build": "tsc && vite build",
-        "format": "prettier --write --config .prettierrc .",
+        "format": "prettier --ignore-path .prettierignore --write --config .prettierrc .",
         "preview": "vite preview"
     },
     "devDependencies": {
         "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
         "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
+        "@rollup/plugin-inject": "^5.0.2",
         "@types/deep-equal": "^1.0.1",
         "@types/downloadjs": "^1.4.3",
         "@types/sql.js": "^1.4.4",

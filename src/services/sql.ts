@@ -16,18 +16,22 @@ export default async function SQL() {
 
     function getSchema(): Schema {
         const schema: Schema = [];
-        const tables = query('SELECT name FROM sqlite_master WHERE type=\'table\'')
-            [0]?.map(t => t.name);
+        const tables = query(
+            "SELECT name FROM sqlite_master WHERE type='table'"
+        )[0]?.map(t => t.name);
 
         if (!tables) return schema;
 
         for (const table of tables) {
-            const columns =
-                query(`SELECT name, type FROM PRAGMA_TABLE_INFO('${table}')`)
-                [0]?.map(c => ({
-                    name: c.name,
-                    type: String(c.type).toLowerCase()
-                }) as ColumnSet);
+            const columns = query(
+                `SELECT name, type FROM PRAGMA_TABLE_INFO('${table}')`
+            )[0]?.map(
+                c =>
+                    ({
+                        name: c.name,
+                        type: String(c.type).toLowerCase()
+                    } as ColumnSet)
+            );
 
             schema.push({
                 tableName: String(table),

@@ -19,12 +19,12 @@ export default function (options: CsvParserOptions) {
             for (let i = 0; i < l; i++) {
                 const header = headers[i];
                 const cell = row[header];
-                
+
                 result[`:val${i}`] = parse(cell);
             }
 
             return result;
-        }
+        };
 
         function parse(cell: UnparsedRowType) {
             if (!cell && typeof cell !== 'number') return null;
@@ -49,7 +49,8 @@ export default function (options: CsvParserOptions) {
                 let parsedItem = infer(String(item));
 
                 if (typeof parsedItem === 'undefined') parsedItem = null;
-                else if (typeof parsedItem === 'boolean') parsedItem = parsedItem ? 1 : 0;
+                else if (typeof parsedItem === 'boolean')
+                    parsedItem = parsedItem ? 1 : 0;
 
                 result[header] = parsedItem;
             }

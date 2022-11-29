@@ -12,12 +12,17 @@ export default function (element: HTMLElement) {
 
     const model = editor.getModel()!;
 
-    editor.onDidChangeModelContent(debounce(() => {
-        localStorage.setItem(STORAGE_KEY, editor.getValue());
-    }, seconds(3)));
+    editor.onDidChangeModelContent(
+        debounce(() => {
+            localStorage.setItem(STORAGE_KEY, editor.getValue());
+        }, seconds(3))
+    );
 
     function onExec(callback: () => void) {
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, callback);
+        editor.addCommand(
+            monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+            callback
+        );
     }
 
     function setContent(content: string) {
@@ -45,13 +50,14 @@ export default function (element: HTMLElement) {
             if (!query) continue;
 
             queries.push(
-                query.endsWith(';') ?
-                    query.substring(0, query.length - 1) :
-                    query
-                );
+                query.endsWith(';')
+                    ? query.substring(0, query.length - 1)
+                    : query
+            );
         }
 
-        return queries.join(';');    }
+        return queries.join(';');
+    }
 
     function getAllContent() {
         return editor.getValue();

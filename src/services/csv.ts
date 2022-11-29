@@ -19,19 +19,14 @@ const defaultOptions: CsvParserOptions = {
     tableName: 'csv'
 };
 
-export default function (
-    sql: Awaited<ReturnType<typeof SQL>>
-) {
-    async function parse(
-        data: string,
-        options: Partial<CsvParserOptions>
-    ) {
+export default function (sql: Awaited<ReturnType<typeof SQL>>) {
+    async function parse(data: string, options: Partial<CsvParserOptions>) {
         const props: CsvParserOptions = fillObject(
             options,
             defaultOptions,
             true
         ) as CsvParserOptions;
-    
+
         const rows = Rows(props);
 
         const lines = stripBom(data).replace(/\r?\n/g, '\n').split(LINE_REGEX);

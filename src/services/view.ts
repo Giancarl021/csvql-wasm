@@ -40,9 +40,13 @@ export default function () {
             'input[type="file"]#upload'
         ) as HTMLInputElement,
         modals: {
-            loading: document.querySelector('div.modal#loading') as HTMLDivElement,
+            loading: document.querySelector(
+                'div.modal#loading'
+            ) as HTMLDivElement,
             error: document.querySelector('div.modal#error') as HTMLDivElement,
-            dropArea: document.querySelector('div.modal#drop-area') as HTMLDivElement
+            dropArea: document.querySelector(
+                'div.modal#drop-area'
+            ) as HTMLDivElement
         }
     };
 
@@ -50,13 +54,18 @@ export default function () {
         tabs: elements.results.querySelector('.tabs')!,
         content: elements.results.querySelector('.content')!,
         contents: [],
-        tableContent: elements.tables.querySelector('ul#content') as HTMLUListElement
+        tableContent: elements.tables.querySelector(
+            'ul#content'
+        ) as HTMLUListElement
     } as ResultElements;
 
     elements.commands.clearResults.onclick = () => clearResults();
 
-    (elements.modals.error.querySelector('button.modal-close') as HTMLButtonElement)
-        .onclick = () => hideModal('error');
+    (
+        elements.modals.error.querySelector(
+            'button.modal-close'
+        ) as HTMLButtonElement
+    ).onclick = () => hideModal('error');
 
     function setSchema(descriptor: Schema) {
         resultElements.tableContent.innerHTML = '';
@@ -72,10 +81,9 @@ export default function () {
             columns.classList.add('table-columns');
 
             tableName.onclick = () => {
-                const wasActive = tableName.classList.contains('is-active'); 
+                const wasActive = tableName.classList.contains('is-active');
 
-                resultElements
-                    .tableContent
+                resultElements.tableContent
                     .querySelectorAll('.is-active')
                     .forEach(el => el.classList.remove('is-active'));
 
@@ -243,7 +251,9 @@ export default function () {
         const tabTitle = document.createElement('span');
 
         tabTitle.classList.add('tab-title');
-        tabTitle.textContent = `#${tabIndex + 1}${isSingleValue ? (isError ? '(!)' : '(*)') : ''}`;
+        tabTitle.textContent = `#${tabIndex + 1}${
+            isSingleValue ? (isError ? '(!)' : '(*)') : ''
+        }`;
         tabTitle.onclick = () =>
             setActiveTab(Number(tab.getAttribute('data-index')!));
 
@@ -270,10 +280,11 @@ export default function () {
 
         tab.setAttribute('data-index', String(tabIndex));
 
-        const results: SqlResults = isSingleValue ? [{ [isError ? 'Error' : 'Message']: result }] : result;
+        const results: SqlResults = isSingleValue
+            ? [{ [isError ? 'Error' : 'Message']: result }]
+            : result;
 
-        if (isSingleValue)
-            tab.classList.add(isError ? 'error' : 'message');
+        if (isSingleValue) tab.classList.add(isError ? 'error' : 'message');
 
         const table = document.createElement('table');
         table.classList.add(
