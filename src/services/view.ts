@@ -83,11 +83,10 @@ export default function () {
             tableName.onclick = () => {
                 const wasActive = tableName.classList.contains('is-active');
 
-                resultElements.tableContent
-                    .querySelectorAll('.is-active')
-                    .forEach(el => el.classList.remove('is-active'));
-
-                if (!wasActive) {
+                if (wasActive) {
+                    tableName.classList.remove('is-active');
+                    columns.classList.remove('is-active');                    
+                } else {
                     tableName.classList.add('is-active');
                     columns.classList.add('is-active');
                 }

@@ -37,7 +37,7 @@ export default function (sql: Awaited<ReturnType<typeof SQL>>) {
 
         if (SEP_REGEX.test(lines[0])) {
             props.skipFirstLine = true;
-            props.delimiter = lines[0].substring(lines[0].indexOf('='));
+            props.delimiter = lines[0].substring(lines[0].indexOf('=') + 1);
 
             headers = rows.split(lines[1]);
         } else {
